@@ -7,15 +7,15 @@ type service struct {
 }
 
 func NewService(repo Repository) *service {
-	return &service{repo: repo}
+	return &service{repo}
 }
 
 func (s *service) CreateUser(req *dto.CreateRequest) (*dto.UserResponse, error) {
 	user := User{
-		Name:  req.Name,
-		Email: req.Email,
-		// Password: req.Password,
-		Age: req.Age,
+		Name:     req.Name,
+		Email:    req.Email,
+		Password: req.Password,
+		Age:      req.Age,
 	}
 
 	err := s.repo.CreateUser(&user)
@@ -30,7 +30,7 @@ func (s *service) CreateUser(req *dto.CreateRequest) (*dto.UserResponse, error) 
 		Email:     user.Email,
 		Age:       user.Age,
 		CreatedAt: user.CreatedAt,
-		UpdatedAt: user.UpdatedAt.String(),
+		UpdatedAt: user.UpdatedAt,
 	}
 
 	return res, nil

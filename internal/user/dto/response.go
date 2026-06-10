@@ -8,5 +8,5 @@ type UserResponse struct {
 	Email     string    `json:"email"`
 	Age       uint8     `json:"age"`
 	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt string    `json:"updated_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }

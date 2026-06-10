@@ -16,7 +16,7 @@ type repository struct {
 }
 
 func NewRepository(db *gorm.DB) Repository {
-	return &repository{db: db}
+	return &repository{db}
 }
 
 func (repo *repository) CreateUser(user *User) error {
@@ -28,11 +28,6 @@ func (repo *repository) CreateUser(user *User) error {
 		}
 
 		return tx.Error
-
-		// return c.JSON(http.StatusInternalServerError, Response{
-		// 	Success: false,
-		// 	Message: "Failed to create user!",
-		// })
 	}
 
 	return nil
