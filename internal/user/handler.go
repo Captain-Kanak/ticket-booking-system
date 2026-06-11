@@ -27,7 +27,8 @@ func (h *handler) CreateUser(c *echo.Context) (err error) {
 
 		return c.JSON(http.StatusBadRequest, httpresponse.Response{
 			Success: false,
-			Message: "Failed to bind request body",
+			Message: "Invalid request body",
+			Error:   err.Error(),
 		})
 	}
 
@@ -37,6 +38,7 @@ func (h *handler) CreateUser(c *echo.Context) (err error) {
 		return c.JSON(http.StatusBadRequest, httpresponse.Response{
 			Success: false,
 			Message: "Validation failed!",
+			Error:   err.Error(),
 		})
 	}
 
