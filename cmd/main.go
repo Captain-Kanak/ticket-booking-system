@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"ticket-booking-system/internal/config"
 	"ticket-booking-system/internal/httpresponse"
 	"ticket-booking-system/internal/user"
 
@@ -26,7 +27,9 @@ func (cv *CustomValidator) Validate(i any) error {
 }
 
 func main() {
-	dsn := "host=localhost user=postgres password=postgres dbname=ticket_booking port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+	config := config.LoadEnv()
+
+	dsn := config.Dsn
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		TranslateError: true,
@@ -68,7 +71,9 @@ func main() {
 	user.RegisterRoutes(e, db)
 
 	// * start server
-	if err := e.Start(":8080"); err != nil {
+	port := fmt.Sprintf(":%s", config.Port)
+
+	if err := e.Start(port); err != nil {
 		e.Logger.Error("failed to start server", "error", err)
 	}
 }
