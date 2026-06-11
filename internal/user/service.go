@@ -10,7 +10,7 @@ func NewService(repo Repository) *service {
 	return &service{repo}
 }
 
-func (s *service) CreateUser(req *dto.CreateRequest) (*dto.UserResponse, error) {
+func (s *service) CreateUser(req *dto.CreateRequest) (res *dto.UserResponse, err error) {
 	user := User{
 		Name:     req.Name,
 		Email:    req.Email,
@@ -18,13 +18,19 @@ func (s *service) CreateUser(req *dto.CreateRequest) (*dto.UserResponse, error) 
 		Age:      req.Age,
 	}
 
-	err := s.repo.CreateUser(&user)
+	err = user.hashPassword(user.Password)
 
 	if err != nil {
 		return nil, err
 	}
 
-	res := &dto.UserResponse{
+	err = s.repo.CreateUser(&user)
+
+	if err != nil {
+		return nil, err
+	}
+
+	response := &dto.UserResponse{
 		ID:        user.ID,
 		Name:      user.Name,
 		Email:     user.Email,
@@ -33,5 +39,5 @@ func (s *service) CreateUser(req *dto.CreateRequest) (*dto.UserResponse, error) 
 		UpdatedAt: user.UpdatedAt,
 	}
 
-	return res, nil
+	return response, nil
 }
