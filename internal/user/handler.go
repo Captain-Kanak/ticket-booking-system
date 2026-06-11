@@ -66,3 +66,51 @@ func (h *handler) CreateUser(c *echo.Context) (err error) {
 		Data:    res,
 	})
 }
+
+func (h *handler) LoginUser(c *echo.Context) (err error) {
+	var req = new(dto.LoginRequest)
+
+	if err = c.Bind(req); err != nil {
+		fmt.Println(err.Error())
+
+		return c.JSON(http.StatusBadRequest, httpresponse.Response{
+			Success: false,
+			Message: "Invalid request body",
+			Error:   err.Error(),
+		})
+	}
+
+	if err = c.Validate(req); err != nil {
+		fmt.Println(err.Error())
+
+		return c.JSON(http.StatusBadRequest, httpresponse.Response{
+			Success: false,
+			Message: "Validation failed!",
+			Error:   err.Error(),
+		})
+	}
+
+	res, err := h.service.LoginUser(req)
+
+	if err != nil {
+		fmt.Println(err.Error())
+
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.JSON(http.StatusNotFound, httpresponse.Response{
+				Success: false,
+				Message: "User not found with this email",
+			})
+		}
+
+		return c.JSON(http.StatusBadRequest, httpresponse.Response{
+			Success: false,
+			Message: "Invalid credentials",
+		})
+	}
+
+	return c.JSON(http.StatusOK, httpresponse.Response{
+		Success: true,
+		Message: "User logged in successfully",
+		Data:    res,
+	})
+}

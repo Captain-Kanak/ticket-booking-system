@@ -1,6 +1,10 @@
 package user
 
-import "ticket-booking-system/internal/user/dto"
+import (
+	"ticket-booking-system/internal/user/dto"
+
+	"gorm.io/gorm"
+)
 
 type service struct {
 	repo Repository
@@ -30,12 +34,37 @@ func (s *service) CreateUser(req *dto.CreateRequest) (res *dto.UserResponse, err
 	}
 
 	response := &dto.UserResponse{
-		ID:        user.ID,
-		Name:      user.Name,
-		Email:     user.Email,
-		Age:       user.Age,
-		CreatedAt: user.CreatedAt,
-		UpdatedAt: user.UpdatedAt,
+		ID:    user.ID,
+		Name:  user.Name,
+		Email: user.Email,
+		Age:   user.Age,
+	}
+
+	return response, nil
+}
+
+func (s *service) LoginUser(req *dto.LoginRequest) (res *dto.UserResponse, err error) {
+	user, err := s.repo.GetUserByEmail(req.Email)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if user == nil {
+		return nil, gorm.ErrRecordNotFound
+	}
+
+	err = user.checkPassword(req.Password)
+
+	if err != nil {
+		return nil, err
+	}
+
+	response := &dto.UserResponse{
+		ID:    user.ID,
+		Name:  user.Name,
+		Email: user.Email,
+		Age:   user.Age,
 	}
 
 	return response, nil

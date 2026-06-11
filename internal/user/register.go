@@ -12,5 +12,6 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 
 	api := e.Group("/api/v1")
 
-	api.POST("/users", userHandler.CreateUser)
+	api.POST("/register", userHandler.CreateUser)
+	api.POST("/login", userHandler.LoginUser)
 }
