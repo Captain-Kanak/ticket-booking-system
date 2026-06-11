@@ -33,52 +33,39 @@ func main() {
 	})
 
 	// * database connection
-	func() {
-		if err != nil {
-			panic("failed to connect database")
-		}
+	if err != nil {
+		panic("failed to connect database")
+	}
 
-		db.AutoMigrate(user.User{})
+	db.AutoMigrate(user.User{})
 
-		fmt.Println("Database connected successfully!")
-	}()
+	fmt.Println("Database connected successfully!")
 
 	e := echo.New()
 
 	// * echo middleware & validator
-	func() {
-		e.Use(middleware.RequestLogger())
+	e.Use(middleware.RequestLogger())
 
-		e.Validator = &CustomValidator{validator: validator.New()}
-	}()
+	e.Validator = &CustomValidator{validator: validator.New()}
 
 	// * basics api routes
-	func() {
-		e.GET("/", func(c *echo.Context) error {
-			// return c.String(http.StatusOK, "Hello, World!")
+	e.GET("/", func(c *echo.Context) error {
+		// return c.String(http.StatusOK, "Hello, World!")
 
-			return c.JSON(http.StatusOK, httpresponse.Response{
-				Success: true,
-				Message: "Ticket Booking System - Server is running successfully!",
-			})
+		return c.JSON(http.StatusOK, httpresponse.Response{
+			Success: true,
+			Message: "Ticket Booking System - Server is running successfully!",
 		})
+	})
 
-		e.GET("/health", func(c *echo.Context) error {
-			return c.JSON(http.StatusOK, httpresponse.Response{
-				Success: true,
-				Message: "Server is healthy!",
-			})
+	e.GET("/health", func(c *echo.Context) error {
+		return c.JSON(http.StatusOK, httpresponse.Response{
+			Success: true,
+			Message: "Server is healthy!",
 		})
-	}()
+	})
 
-	// * user routes
-	func() {
-		userRepo := user.NewRepository(db)
-		userService := user.NewService(userRepo)
-		userHandler := user.NewHandler(userService)
-
-		e.POST("/users", userHandler.CreateUser)
-	}()
+	user.RegisterRoutes(e, db)
 
 	// * start server
 	if err := e.Start(":8080"); err != nil {
