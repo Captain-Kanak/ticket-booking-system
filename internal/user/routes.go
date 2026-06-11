@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func RegisterRoutes(e *echo.Echo, db *gorm.DB) {
+func Routes(e *echo.Echo, db *gorm.DB) {
 	userRepo := NewRepository(db)
 	userService := NewService(userRepo)
 	userHandler := NewHandler(userService)

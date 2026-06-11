@@ -53,7 +53,8 @@ func main() {
 		})
 	})
 
-	user.RegisterRoutes(e, db)
+	// * user routes
+	user.Routes(e, db)
 
 	// * start server
 	port := fmt.Sprintf(":%s", cfg.Port)

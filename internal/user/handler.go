@@ -2,10 +2,11 @@ package user
 
 import (
 	"fmt"
-	"github.com/labstack/echo/v5"
 	"net/http"
 	"ticket-booking-system/internal/httpresponse"
 	"ticket-booking-system/internal/user/dto"
+
+	"github.com/labstack/echo/v5"
 )
 
 type handler struct {
