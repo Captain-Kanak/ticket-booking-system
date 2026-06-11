@@ -1,12 +1,14 @@
 package user
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"ticket-booking-system/internal/httpresponse"
 	"ticket-booking-system/internal/user/dto"
 
 	"github.com/labstack/echo/v5"
+	"gorm.io/gorm"
 )
 
 type handler struct {
@@ -42,6 +44,13 @@ func (h *handler) CreateUser(c *echo.Context) (err error) {
 
 	if err != nil {
 		fmt.Println(err.Error())
+
+		if errors.Is(err, gorm.ErrDuplicatedKey) {
+			return c.JSON(http.StatusConflict, httpresponse.Response{
+				Success: false,
+				Message: "User already exists with this email",
+			})
+		}
 
 		return c.JSON(http.StatusInternalServerError, httpresponse.Response{
 			Success: false,
