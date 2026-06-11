@@ -25,14 +25,14 @@ func (cv *CustomValidator) Validate(i any) error {
 	return nil
 }
 
-func StartServer(cfg *config.EnvConfig, db *gorm.DB) {
+func Start(cfg *config.EnvConfig, db *gorm.DB) {
 	e := echo.New()
 
 	// * echo middleware & validator
 	e.Use(middleware.RequestLogger())
 	e.Validator = &CustomValidator{validator: validator.New()}
 
-	// * basics api routes
+	// * basics routes
 	e.GET("/", func(c *echo.Context) error {
 		return c.JSON(http.StatusOK, httpresponse.Response{
 			Success: true,
@@ -48,6 +48,7 @@ func StartServer(cfg *config.EnvConfig, db *gorm.DB) {
 	})
 
 	// * user routes
+	db.AutoMigrate(user.User{})
 	user.Routes(e, db)
 
 	port := fmt.Sprintf(":%s", cfg.Port)

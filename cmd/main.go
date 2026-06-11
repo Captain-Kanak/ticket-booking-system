@@ -10,5 +10,5 @@ func main() {
 
 	db := config.ConnectDatabase(cfg)
 
-	server.StartServer(cfg, db)
+	server.Start(cfg, db)
 }

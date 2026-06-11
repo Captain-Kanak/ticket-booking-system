@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"ticket-booking-system/internal/user"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -18,8 +17,6 @@ func ConnectDatabase(config *EnvConfig) *gorm.DB {
 	if err != nil {
 		panic("failed to connect database")
 	}
-
-	db.AutoMigrate(user.User{})
 
 	fmt.Println("Database connected successfully!")
 
