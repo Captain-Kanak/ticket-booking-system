@@ -8,6 +8,7 @@ import (
 	"ticket-booking-system/internal/user/dto"
 
 	"github.com/labstack/echo/v5"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -102,9 +103,16 @@ func (h *handler) LoginUser(c *echo.Context) (err error) {
 			})
 		}
 
-		return c.JSON(http.StatusBadRequest, httpresponse.Response{
+		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+			return c.JSON(http.StatusUnauthorized, httpresponse.Response{
+				Success: false,
+				Message: "Invalid credentials",
+			})
+		}
+
+		return c.JSON(http.StatusInternalServerError, httpresponse.Response{
 			Success: false,
-			Message: "Invalid credentials",
+			Message: "Failed to login user",
 		})
 	}
 

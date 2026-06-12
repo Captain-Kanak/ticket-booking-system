@@ -13,6 +13,7 @@ type User struct {
 	Name      string         `json:"name" gorm:"type:varchar(100);not null"`
 	Email     string         `json:"email" gorm:"type:varchar(255);unique;not null"`
 	Password  string         `json:"password" gorm:"type:varchar(255);not null"`
+	Phone     string         `json:"phone" gorm:"type:varchar(20)"`
 	Age       uint8          `json:"age"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`

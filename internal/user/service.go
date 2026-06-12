@@ -1,6 +1,7 @@
 package user
 
 import (
+	"ticket-booking-system/internal/auth"
 	"ticket-booking-system/internal/user/dto"
 
 	"gorm.io/gorm"
@@ -8,10 +9,11 @@ import (
 
 type service struct {
 	repo Repository
+	jwt  auth.JWTService
 }
 
-func NewService(repo Repository) *service {
-	return &service{repo}
+func NewService(repo Repository, jwt auth.JWTService) *service {
+	return &service{repo, jwt}
 }
 
 func (s *service) CreateUser(req *dto.CreateRequest) (res *dto.UserResponse, err error) {
@@ -43,7 +45,7 @@ func (s *service) CreateUser(req *dto.CreateRequest) (res *dto.UserResponse, err
 	return response, nil
 }
 
-func (s *service) LoginUser(req *dto.LoginRequest) (res *dto.UserResponse, err error) {
+func (s *service) LoginUser(req *dto.LoginRequest) (res *dto.LoginResponse, err error) {
 	user, err := s.repo.GetUserByEmail(req.Email)
 
 	if err != nil {
@@ -60,11 +62,20 @@ func (s *service) LoginUser(req *dto.LoginRequest) (res *dto.UserResponse, err e
 		return nil, err
 	}
 
-	response := &dto.UserResponse{
-		ID:    user.ID,
-		Name:  user.Name,
-		Email: user.Email,
-		Age:   user.Age,
+	token, err := s.jwt.GenerateToken(user.ID, user.Name, user.Email)
+
+	if err != nil {
+		return nil, err
+	}
+
+	response := &dto.LoginResponse{
+		Token: token,
+		User: dto.UserResponse{
+			ID:    user.ID,
+			Name:  user.Name,
+			Email: user.Email,
+			Age:   user.Age,
+		},
 	}
 
 	return response, nil

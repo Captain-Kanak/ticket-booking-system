@@ -10,3 +10,8 @@ type UserResponse struct {
 	Email string    `json:"email"`
 	Age   uint8     `json:"age"`
 }
+
+type LoginResponse struct {
+	Token string `json:"token,omitempty"`
+	User  UserResponse
+}
