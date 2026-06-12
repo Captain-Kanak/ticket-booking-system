@@ -21,7 +21,7 @@ type JWTClaims struct {
 
 type JWTService interface {
 	GenerateToken(id uuid.UUID, name, email string) (string, error)
-	ValidateToken(token string) error
+	ValidateToken(token string) (*JWTClaims, error)
 }
 
 type jwtService struct {
@@ -63,12 +63,22 @@ func (j *jwtService) GenerateToken(id uuid.UUID, name, email string) (string, er
 	return tokenString, nil
 }
 
-func (j *jwtService) ValidateToken(token string) error {
-	_, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+func (j *jwtService) ValidateToken(tokenString string) (*JWTClaims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &JWTClaims{}, func(t *jwt.Token) (any, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, jwt.ErrSignatureInvalid
 		}
+
 		return []byte(j.secret), nil
 	})
-	return err
+
+	if err != nil {
+		return nil, err
+	}
+
+	if claims, ok := token.Claims.(*JWTClaims); ok && token.Valid {
+		return claims, nil
+	}
+
+	return nil, jwt.ErrSignatureInvalid
 }
