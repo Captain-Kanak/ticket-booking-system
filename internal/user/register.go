@@ -2,6 +2,7 @@ package user
 
 import (
 	"ticket-booking-system/internal/auth"
+	"ticket-booking-system/internal/middleware"
 
 	"github.com/labstack/echo/v5"
 	"gorm.io/gorm"
@@ -17,4 +18,5 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 
 	api.POST("/register", userHandler.CreateUser)
 	api.POST("/login", userHandler.LoginUser)
+	api.GET("/getMe", userHandler.GetMe, middleware.AuthMiddleware(jwtService))
 }

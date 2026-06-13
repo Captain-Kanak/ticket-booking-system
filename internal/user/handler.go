@@ -122,3 +122,31 @@ func (h *handler) LoginUser(c *echo.Context) (err error) {
 		Data:    res,
 	})
 }
+
+func (h *handler) GetMe(c *echo.Context) (err error) {
+	email := c.Get("user_email").(string)
+
+	res, err := h.service.GetMe(email)
+
+	if err != nil {
+		fmt.Println(err.Error())
+
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.JSON(http.StatusNotFound, httpresponse.Response{
+				Success: false,
+				Message: "User not found with this email",
+			})
+		}
+
+		return c.JSON(http.StatusInternalServerError, httpresponse.Response{
+			Success: false,
+			Message: "Failed to get user",
+		})
+	}
+
+	return c.JSON(http.StatusOK, httpresponse.Response{
+		Success: true,
+		Message: "User fetched successfully",
+		Data:    res,
+	})
+}
