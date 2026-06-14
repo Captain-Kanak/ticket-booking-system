@@ -12,12 +12,13 @@ func NewService(repo Repository) *service {
 
 func (s *service) Create(req *dto.CreateRequest) (res *dto.Response, err error) {
 	event := &Event{
-		Title:        req.Title,
-		Description:  req.Description,
-		Location:     req.Location,
-		StartDate:    req.StartDate,
-		TotalTickets: req.TotalTickets,
-		Price:        req.Price,
+		Title:            req.Title,
+		Description:      req.Description,
+		Location:         req.Location,
+		StartDate:        req.StartDate,
+		TotalTickets:     req.TotalTickets,
+		AvailableTickets: req.TotalTickets,
+		Price:            req.Price,
 	}
 
 	err = s.repo.Create(event)
