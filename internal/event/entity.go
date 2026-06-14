@@ -1,6 +1,7 @@
 package event
 
 import (
+	"ticket-booking-system/internal/event/dto"
 	"time"
 
 	"github.com/google/uuid"
@@ -21,13 +22,16 @@ type Event struct {
 	DeletedAt        gorm.DeletedAt `json:"deleted_at"`
 }
 
-// type Venue struct {
-// 	ID          uuid.UUID      `json:"id" gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
-// 	Title       string         `json:"title" gorm:"type:varchar(255);not null"`
-// 	Description string         `json:"description" gorm:"type:text"`
-// 	City        string         `json:"city" gorm:"type:varchar(255);not null"`
-// 	Capacity    int            `json:"capacity" gorm:"type:int;not null"`
-// 	CreatedAt   time.Time      `json:"created_at"`
-// 	UpdatedAt   time.Time      `json:"updated_at"`
-// 	DeletedAt   gorm.DeletedAt `json:"deleted_at"`
-// }
+func (e *Event) ToResponse() *dto.Response {
+	return &dto.Response{
+		ID:               e.ID,
+		Title:            e.Title,
+		Description:      e.Description,
+		Location:         e.Location,
+		StartDate:        e.StartDate,
+		TotalTickets:     e.TotalTickets,
+		AvailableTickets: e.AvailableTickets,
+		Price:            e.Price,
+		CreatedAt:        e.CreatedAt,
+	}
+}

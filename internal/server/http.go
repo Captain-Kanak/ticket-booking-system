@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"ticket-booking-system/internal/config"
 	"ticket-booking-system/internal/httpresponse"
-	"ticket-booking-system/internal/user"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v5"
@@ -47,9 +46,8 @@ func Start(cfg *config.EnvConfig, db *gorm.DB) {
 		})
 	})
 
-	// * user routes
-	db.AutoMigrate(user.User{})
-	user.Routes(e, db)
+	// * routes handler
+	RoutesHandler(e, db)
 
 	port := fmt.Sprintf(":%s", cfg.Port)
 
