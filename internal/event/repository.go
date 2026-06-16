@@ -34,6 +34,12 @@ func (r *repository) Create(event *Event) error {
 func (r *repository) GetAll() ([]*Event, error) {
 	var events []*Event
 
+	tx := r.db.Find(&events)
+
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
 	return events, nil
 }
 

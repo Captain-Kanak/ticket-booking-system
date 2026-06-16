@@ -18,9 +18,9 @@ func NewHandler(service *service) *handler {
 }
 
 func (h *handler) Create(c *echo.Context) (err error) {
-	var req = new(dto.CreateRequest)
+	var req dto.CreateRequest
 
-	if err = c.Bind(req); err != nil {
+	if err = c.Bind(&req); err != nil {
 		fmt.Println(err.Error())
 
 		return c.JSON(http.StatusBadRequest, httpresponse.Response{
@@ -30,7 +30,7 @@ func (h *handler) Create(c *echo.Context) (err error) {
 		})
 	}
 
-	if err = c.Validate(req); err != nil {
+	if err = c.Validate(&req); err != nil {
 		fmt.Println(err.Error())
 
 		return c.JSON(http.StatusBadRequest, httpresponse.Response{
@@ -40,7 +40,7 @@ func (h *handler) Create(c *echo.Context) (err error) {
 		})
 	}
 
-	res, err := h.service.Create(req)
+	res, err := h.service.Create(&req)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -54,6 +54,25 @@ func (h *handler) Create(c *echo.Context) (err error) {
 	return c.JSON(http.StatusOK, httpresponse.Response{
 		Success: true,
 		Message: "Event created successfully",
+		Data:    res,
+	})
+}
+
+func (h *handler) GetAll(c *echo.Context) (err error) {
+	res, err := h.service.GetAll()
+
+	if err != nil {
+		fmt.Println(err.Error())
+
+		return c.JSON(http.StatusInternalServerError, httpresponse.Response{
+			Success: false,
+			Message: "Failed to get events",
+		})
+	}
+
+	return c.JSON(http.StatusOK, httpresponse.Response{
+		Success: true,
+		Message: "Events fetched successfully",
 		Data:    res,
 	})
 }

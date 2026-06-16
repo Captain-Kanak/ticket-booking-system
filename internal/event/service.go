@@ -27,16 +27,18 @@ func (s *service) Create(req *dto.CreateRequest) (res *dto.Response, err error) 
 		return nil, err
 	}
 
-	res = &dto.Response{
-		ID:               event.ID,
-		Title:            event.Title,
-		Description:      event.Description,
-		Location:         event.Location,
-		StartDate:        event.StartDate,
-		TotalTickets:     event.TotalTickets,
-		AvailableTickets: event.TotalTickets,
-		Price:            event.Price,
-		CreatedAt:        event.CreatedAt,
+	return event.ToResponse(), nil
+}
+
+func (s *service) GetAll() (res []*dto.Response, err error) {
+	events, err := s.repo.GetAll()
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, event := range events {
+		res = append(res, event.ToResponse())
 	}
 
 	return res, nil

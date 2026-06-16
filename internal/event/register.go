@@ -12,7 +12,8 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	eventService := NewService(eventRepo)
 	eventHandler := NewHandler(eventService)
 
-	api := e.Group("/api/v1")
+	api := e.Group("/api/v1/events")
 
-	api.POST("/events", eventHandler.Create)
+	api.POST("", eventHandler.Create)
+	api.GET("", eventHandler.GetAll)
 }

@@ -2,9 +2,7 @@ package server
 
 import (
 	"fmt"
-	"net/http"
 	"ticket-booking-system/internal/config"
-	"ticket-booking-system/internal/httpresponse"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v5"
@@ -31,22 +29,7 @@ func Start(cfg *config.EnvConfig, db *gorm.DB) {
 	e.Use(middleware.RequestLogger())
 	e.Validator = &CustomValidator{validator: validator.New()}
 
-	// * basics routes
-	e.GET("/", func(c *echo.Context) error {
-		return c.JSON(http.StatusOK, httpresponse.Response{
-			Success: true,
-			Message: "Ticket Booking System - Server is running successfully!",
-		})
-	})
-
-	e.GET("/health", func(c *echo.Context) error {
-		return c.JSON(http.StatusOK, httpresponse.Response{
-			Success: true,
-			Message: "Server is healthy!",
-		})
-	})
-
-	// * routes handler
+	// * db migrations & routes handler
 	RoutesHandler(e, db)
 
 	port := fmt.Sprintf(":%s", cfg.Port)
