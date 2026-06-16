@@ -1,6 +1,10 @@
 package event
 
-import "ticket-booking-system/internal/event/dto"
+import (
+	"ticket-booking-system/internal/event/dto"
+
+	"github.com/google/uuid"
+)
 
 type service struct {
 	repo Repository
@@ -42,4 +46,14 @@ func (s *service) GetAll() (res []*dto.Response, err error) {
 	}
 
 	return res, nil
+}
+
+func (s *service) GetByID(id uuid.UUID) (res *dto.Response, err error) {
+	event, err := s.repo.GetByID(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return event.ToResponse(), nil
 }

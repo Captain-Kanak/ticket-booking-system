@@ -1,8 +1,6 @@
 package event
 
 import (
-	// "ticket-booking-system/internal/middleware"
-
 	"github.com/labstack/echo/v5"
 	"gorm.io/gorm"
 )
@@ -16,4 +14,5 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 
 	api.POST("", eventHandler.Create)
 	api.GET("", eventHandler.GetAll)
+	api.GET("/:id", eventHandler.GetByID)
 }

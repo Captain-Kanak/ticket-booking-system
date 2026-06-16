@@ -1,12 +1,15 @@
 package event
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"ticket-booking-system/internal/event/dto"
 	"ticket-booking-system/internal/httpresponse"
 
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v5"
+	"gorm.io/gorm"
 )
 
 type handler struct {
@@ -73,6 +76,46 @@ func (h *handler) GetAll(c *echo.Context) (err error) {
 	return c.JSON(http.StatusOK, httpresponse.Response{
 		Success: true,
 		Message: "Events fetched successfully",
+		Data:    res,
+	})
+}
+
+func (h *handler) GetByID(c *echo.Context) (err error) {
+	id := c.Param("id")
+
+	parsedId, err := uuid.Parse(id)
+
+	if err != nil {
+		fmt.Println(err.Error())
+
+		return c.JSON(http.StatusBadRequest, httpresponse.Response{
+			Success: false,
+			Message: "Invalid event ID",
+			Error:   err.Error(),
+		})
+	}
+
+	res, err := h.service.GetByID(parsedId)
+
+	if err != nil {
+		fmt.Println(err.Error())
+
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.JSON(http.StatusNotFound, httpresponse.Response{
+				Success: false,
+				Message: "Event not found",
+			})
+		}
+
+		return c.JSON(http.StatusInternalServerError, httpresponse.Response{
+			Success: false,
+			Message: "Failed to get event",
+		})
+	}
+
+	return c.JSON(http.StatusOK, httpresponse.Response{
+		Success: true,
+		Message: "Event fetched successfully",
 		Data:    res,
 	})
 }

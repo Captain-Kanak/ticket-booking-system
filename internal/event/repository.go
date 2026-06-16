@@ -46,6 +46,12 @@ func (r *repository) GetAll() ([]*Event, error) {
 func (r *repository) GetByID(id uuid.UUID) (*Event, error) {
 	var event *Event
 
+	tx := r.db.First(&event, id)
+
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
 	return event, nil
 }
 
