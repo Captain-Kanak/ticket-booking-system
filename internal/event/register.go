@@ -15,4 +15,5 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	api.POST("", eventHandler.Create)
 	api.GET("", eventHandler.GetAll)
 	api.GET("/:id", eventHandler.GetByID)
+	api.PATCH("/:id", eventHandler.GetByID)
 }

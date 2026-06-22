@@ -17,7 +17,7 @@ type handler struct {
 }
 
 func NewHandler(service *service) *handler {
-	return &handler{service: service}
+	return &handler{service}
 }
 
 func (h *handler) CreateUser(c *echo.Context) (err error) {

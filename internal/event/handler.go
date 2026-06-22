@@ -81,9 +81,7 @@ func (h *handler) GetAll(c *echo.Context) (err error) {
 }
 
 func (h *handler) GetByID(c *echo.Context) (err error) {
-	id := c.Param("id")
-
-	parsedId, err := uuid.Parse(id)
+	parsedId, err := uuid.Parse(c.Param("id"))
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -117,5 +115,45 @@ func (h *handler) GetByID(c *echo.Context) (err error) {
 		Success: true,
 		Message: "Event fetched successfully",
 		Data:    res,
+	})
+}
+
+func (h *handler) UpdateById(c *echo.Context) (err error) {
+	var req dto.UpdateRequest
+	// parsedId, err := uuid.Parse(c.Param("id"))
+
+	if err != nil {
+		fmt.Println(err.Error())
+
+		return c.JSON(http.StatusBadRequest, httpresponse.Response{
+			Success: false,
+			Message: "Invalid event ID",
+			Error:   err.Error(),
+		})
+	}
+
+	if err = c.Bind(&req); err != nil {
+		fmt.Println(err.Error())
+
+		return c.JSON(http.StatusBadRequest, httpresponse.Response{
+			Success: false,
+			Message: "Invalid request body",
+			Error:   err.Error(),
+		})
+	}
+
+	if err = c.Validate(&req); err != nil {
+		fmt.Println(err.Error())
+
+		return c.JSON(http.StatusBadRequest, httpresponse.Response{
+			Success: false,
+			Message: "Validation failed!",
+			Error:   err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, httpresponse.Response{
+		Success: true,
+		Message: "Event Updated successfully",
 	})
 }

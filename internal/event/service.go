@@ -57,3 +57,24 @@ func (s *service) GetByID(id uuid.UUID) (res *dto.Response, err error) {
 
 	return event.ToResponse(), nil
 }
+
+// func (s *service) UpdateById(id uuid.UUID, req *dto.UpdateRequest) (res *dto.Response, err error) {
+// 	event, err := s.repo.GetByID(id)
+
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	event.Title = req.Title
+// 	event.Description = req.Description
+// 	event.Location = req.Location
+// 	event.StartDate = req.StartDate
+// 	event.Price = req.Price
+
+// 	// err = s.repo.Update(id, event)
+
+// 	// if err != nil {
+// 	// 	return nil, err
+// 	// }
+
+// }
